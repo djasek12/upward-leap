@@ -1,0 +1,99 @@
+<ion-view class="view" view-title="Reminder Set">
+    <ion-content class="content">
+
+        <button class="button" ng-click="incrementCounter()">
+          incrementCounter {{counter}}
+        </button>
+
+        <div class="row">
+          <div class="col">
+            <label class="item item-input item-select">
+              <div class="input-label">
+                Reminder Type
+              </div>
+              <select id="reminderTypeSelect" , ng-model="reminderType">
+                <option value="prayer">Prayer</option>
+                <option value="intention">Intention</option>
+                <option value="meditation">Meditation</option>
+                <option value="quotes">Quotes</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="row top-buffer" ng-show='reminderType == "prayer"'>
+          <div class="col">
+            <label class="item item-input item-select">
+              <div class="input-label">
+                Prayer
+              </div>
+              <select id="prayerTypeSelect" , ng-model="prayerType">
+                <option value="ourFather">Our Father</option>
+                <option value="hailMary">Hail Mary</option>
+                <option value="gloryBe">Glory Be</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="row" ng-show="prayerType!=undefined">
+          <div class="col">
+            <label class="item item-input item-select">
+              <div class="input-label">
+                Frequency
+              </div>
+              <select id="frequencySelect" , ng-model="frequency">
+                <option value="once">One-time</option>
+                <option value="hour">Hourly</option>
+                <option value="day">Daily</option>
+                <option value="week">Weekly</option>
+                <option value="month">Monthly</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+  <!-- ng-show='frequency == "once" || frequency == "week" || frequency == "month"' -->
+        <div class="row" ng-show='frequency!=undefined'>
+          <div class="col">
+              <button class="button" ng-click="openPickers()">
+                Select first occurence
+              </button>
+          </div>
+        </div>
+
+        <!-- <div class="row">
+          <div class="col">
+              <button class="button" ng-click="openTimePicker()">
+                Select a time
+              </button>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+              <button class="button" ng-click="scheduleReminder()">
+                schedule reminder
+              </button>
+          </div>
+        </div> -->
+
+
+        <!--<div class="container-fluid">-->
+        <!--<div class="row">-->
+        <!--<button class="button" ng-click="cancelAllNotifications()">-->
+        <!--Cancel All Notifications-->
+        <!--</button>-->
+        <!--</div>-->
+
+        <!--<div class="row">-->
+        <!--<button class="button" ng-click="displayNotifications()">-->
+        <!--See all notifications-->
+        <!--</button>-->
+        <!--</div>-->
+
+        
+
+
+    </ion-content>
+</ion-view>

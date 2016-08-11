@@ -1,0 +1,34 @@
+/* Empty. Add your own CSS if you like */
+
+.row{
+  margin-top: 20px;
+  margin-bottom: 20px
+}
+
+.button{
+  margin:auto;
+  display:block;
+}
+
+.heading{
+  background-color: #000;
+  color: white;
+}
+
+.main-title {
+  font-family: Papyrus;
+}
+
+/*p {
+  text-align: center;
+  font-family: Papyrus;
+  font-size: 20px;
+}*/
+
+ion-header-bar {
+  background-color: #009688 !important;
+}
+
+/*.pane {
+    background-color: #0099cc !important;
+}*/
