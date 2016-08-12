@@ -11,13 +11,17 @@ var mainApp = angular.module('starter', ['ionic', 'ngCordova', 'starter.controll
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
         // for form inputs)
         if (window.cordova && window.cordova.plugins.Keyboard) {
-            cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+            cordova.plugins.Keyboard.hideKeyboardAccessoryBar(false);
             cordova.plugins.Keyboard.disableScroll(true);
 
         }
         if (window.StatusBar) {
             // org.apache.cordova.statusbar required
             StatusBar.styleDefault();
+        }
+
+        if(ionic.Platform.isWebView() && device.platform === "iOS") {
+            window.plugin.notification.local.promptForPermission();
         }
 
     });
@@ -78,64 +82,62 @@ var mainApp = angular.module('starter', ['ionic', 'ngCordova', 'starter.controll
 });
 
 
-angular.module('starter').factory('BirthdayService', ['$q', BirthdayService]);
+angular.module('starter').factory('ReminderService', ['$q', ReminderService]);
 
-function BirthdayService($q) {
+function ReminderService($q) {
     var _db;
 
-    // We'll need this later.
-    var _birthdays;
+    var _reminders;
 
     return {
         initDB: initDB,
-
-        // We'll add these later.
-        getAllBirthdays: getAllBirthdays,
-        addBirthday: addBirthday,
-        updateBirthday: updateBirthday,
-        deleteBirthday: deleteBirthday
+        getAllReminders: getAllReminders,
+        addReminder: addReminder,
+        deleteReminder: deleteReminder
     };
 
     function initDB() {
         // Creates the database or opens if it already exists
         console.log("creating db")
-        _db = new PouchDB('test7');
+        _db = new PouchDB('reminders');
     };
 
-    function addBirthday(birthday) {
-        console.log("adding birthday: " + birthday);
+    function addReminder(reminder) {
+        console.log("adding reminder: " + JSON.stringify(reminder));
 
-        var doc = {
-            "_id": "mittens2",
-            "name": "Mittens",
-            "occupation": "kitten",
-            "age": 3,
-            "hobbies": [
-                "playing with balls of yarn",
-                "chasing laser pointers",
-            ]
-        };
+        // var doc = {
+        //     "_id": "mittens2",
+        //     "name": "Mittens",
+        //     "occupation": "kitten",
+        //     "age": 3,
+        //     "hobbies": [
+        //         "playing with balls of yarn",
+        //         "chasing laser pointers",
+        //     ]
+        // };
+
+        return $q.when(_db.post(reminder));
 
     };
 
-    function updateBirthday(birthday) {
-        return $q.when(_db.put(birthday));
+    function updateReminder(reminder) {
+        return $q.when(_db.put(reminder));
     };
 
-    function deleteBirthday(birthday) {
-        return $q.when(_db.remove(birthday));
+    function deleteReminder(reminder) {
+        return $q.when(_db.remove(reminder));
     };
 
-    function getAllBirthdays() {
-        console.log("getting all birthdays");
-        if (!_birthdays) {
+    function getAllReminders() {
+        console.log("getting all reminders");
+        if (!_reminders) {
             return $q.when(_db.allDocs({ include_docs: true}))
             .then(function(docs) {
                 console.log("inside first one")
                 // Each row has a .doc object and we just want to send an
-                // array of birthday objects back to the calling controller,
+                // array of reminder objects back to the calling controller,
                 // so let's map the array to contain just the .doc objects.
-                _birthdays = docs.rows.map(function(row) {
+                _reminders = docs.rows.map(function(row) {
                     // Dates are not automatically converted from a string.
                     return row.doc;
                 });
@@ -143,27 +145,27 @@ function BirthdayService($q) {
                 // Listen for changes on the database.
                 _db.changes({ live: true, since: 'now', include_docs: true})
                 .on('change', onDatabaseChange);
-                return _birthdays;
+                return _reminders;
             });
         } else {
             // Return cached data as a promise
-            return $q.when(_birthdays);
+            return $q.when(_reminders);
         }
     };
 
     function onDatabaseChange(change) {
-        var index = findIndex(_birthdays, change.id);
-        var birthday = _birthdays[index];
+        var index = findIndex(_reminders, change.id);
+        var reminder = _reminders[index];
 
         if (change.deleted) {
-            if (birthday) {
-                _birthdays.splice(index, 1); // delete
+            if (reminder) {
+                _reminders.splice(index, 1); // delete
             }
         } else {
-            if (birthday && birthday._id === change.id) {
-                _birthdays[index] = change.doc; // update
+            if (reminder && reminder._id === change.id) {
+                _reminders[index] = change.doc; // update
             } else {
-                _birthdays.splice(index, 0, change.doc) // insert
+                _reminders.splice(index, 0, change.doc) // insert
             }
         }
     };

@@ -13,17 +13,26 @@ angular.module('starter.controllers', [])
 .controller('WelcomeCtrl', function($scope) {
 })
 
-.controller('AlertCtrl', function($scope, $cordovaLocalNotification, $ionicPlatform, ionicTimePicker, ionicDatePicker, $state, BirthdayService) {
+.controller('AlertCtrl', function($scope, $cordovaLocalNotification, $ionicPlatform, ionicTimePicker, ionicDatePicker, $state, ReminderService) {
+
+    $scope.navToNewReminder = function () {
+      console.log("navToNewReminder clicked");
+      $state.go('app.newReminder');
+    }
 
     $ionicPlatform.ready(function() {
-        BirthdayService.initDB();
-        BirthdayService.addBirthday("test");
+        // ReminderService.initDB();
+        // ReminderService.addReminder("test");
+        //
+        // // // Get all Reminder records from the database.
+        // ReminderService.getAllReminders().then(function(Reminders) {
+        //     $scope.reminders = JSON.stringify(Reminders);
+        //     console.log("all Reminders: " + $scope.reminders);
+        // });
 
-        // // Get all birthday records from the database.
-        BirthdayService.getAllBirthdays().then(function(birthdays) {
-            $scope.birthdays = birthdays;
-            console.log("all birthdays: " + birthdays);
-        });
+        if(ionic.Platform.isWebView() && device.platform === "iOS") {
+            window.plugin.notification.local.promptForPermission();
+        }
     });
 
     $scope.$watch('counter', function(newValue, oldValue) {
@@ -141,26 +150,35 @@ angular.module('starter.controllers', [])
         console.log("reminderText: " + $scope.reminderText);
         console.log("frequency: " + $scope.frequency);
         console.log("new date: " + $scope.date);
+        console.log("current date: " + new Date());
 
-        //BirthdayService.addBirthday("test");
-
-        if(!ionic.Platform.isWebView()) {
-            $state.go('app.newReminder');
+        $scope.reminder = {
+          id: 10,
+          title: $scope.reminderType,
+          text: $scope.reminderText,
+          every: $scope.frequency,
+          autoClear: false,
+          at: $scope.date
         }
 
+        //ReminderService.addReminder($scope.reminder);
+
+        console.log("reminder object: " + $scope.reminder);
+
         document.addEventListener('deviceready', function () {
+          console.log("device ready");
+          // cordova.plugins.notification.local.registerPermission(function(str) {
+          //   console.log('Push Permissions:'+str);
             cordova.plugins.notification.local.schedule({
-                id: 10,
-                title: $scope.reminderType,
-                text: $scope.reminderText,
-                every: $scope.frequency,
-                autoClear: false,
-                at: $scope.date
+              id: 10,
+              title: $scope.reminderType,
+              text: $scope.reminderText,
+              every: $scope.frequency,
+              autoClear: false,
+              at: $scope.date
             });
-
-            $state.go('app.newReminder');
-        });
-
+          });
+        // });
 
     };
 
