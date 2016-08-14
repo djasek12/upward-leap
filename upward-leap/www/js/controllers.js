@@ -2,12 +2,6 @@ angular.module('starter.controllers', [])
 
 .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
 
-    // With the new view caching in Ionic, Controllers are only called
-    // when they are recreated or on app start, instead of every page change.
-    // To listen for when this page is active (for example, to refresh data),
-    // listen for the $ionicView.enter event:
-    //$scope.$on('$ionicView.enter', function(e) {
-    //});
 })
 
 .controller('WelcomeCtrl', function($scope) {
@@ -114,28 +108,35 @@ angular.module('starter.controllers', [])
         $scope.date = new Date($scope.year, $scope.month, $scope.day, $scope.hours, $scope.minutes);
 
         $scope.reminder = {
-          id: new Date().getTime(),
-          title: $scope.reminderType,
-          text: $scope.reminderText,
-          every: $scope.frequency,
-          at: $scope.date
+            id: new Date().getTime(),
+            title: $scope.reminderType,
+            text: $scope.reminderText,
+            every: $scope.frequency,
+            at: $scope.date
         }
 
         ReminderService.addReminder($scope.reminder);
-
         console.log("reminder object: " + $scope.reminder);
 
-        document.addEventListener('deviceready', function () {
-            console.log("device ready");
+        if(ionic.Platform.isWebView()) {
             cordova.plugins.notification.local.schedule($scope.reminder);
-        });
+            $state.go('app.reminders');
+        } else {
+            $state.go('app.reminders');
+
+        }
+
+        // document.addEventListener('deviceready', function () {
+        //     console.log("device ready");
+        //     cordova.plugins.notification.local.schedule($scope.reminder);
+        // });
 
     };
 
     $scope.openPickers = function() {
         console.log("openPickers")
         if($scope.frequency == 'day' || $scope.frequency == 'hour')
-            $scope.openTimePicker()
+        $scope.openTimePicker()
         else {
             $scope.openTimePicker()
             $scope.openDatePicker()
@@ -152,21 +153,21 @@ angular.module('starter.controllers', [])
 
 .controller('RemindersCtrl', function($scope, $ionicPlatform, $state, ReminderService) {
 
+    $scope.test = [{"id":"1"}, {"id":"2"}]
+
     $scope.navToNewReminder = function () {
-      console.log("navToNewReminder clicked");
-      $state.go('app.newReminder');
+        console.log("navToNewReminder clicked");
+        $state.go('app.newReminder');
     }
 
     $scope.updateReminders = function() {
         console.log("calling update function");
         //$scope.reminders = ReminderService._reminders;
         ReminderService.getAllReminders().then(function(Reminders) {
-            $scope.reminders = JSON.stringify(Reminders);
+            $scope.reminders = Reminders;
             console.log("all Reminders: " + $scope.reminders);
         });
     }
-
-
 
     $ionicPlatform.ready(function() {
         ReminderService.initDB();
@@ -179,12 +180,26 @@ angular.module('starter.controllers', [])
         }
     });
 
-    $scope.cancelAllNotifications = function () {
-        ReminderService.deleteAllReminders().then(function() {
-            console.log("test");
-            ReminderService.initDB();
+    $scope.cancelNotification = function (reminder) {
+        console.log("deleting reminder: " + JSON.stringify(reminder));
+        ReminderService.deleteReminder(reminder).then(function() {
             $scope.updateReminders();
-            $state.go('app.reminders');
+        });
+
+        if(ionic.Platform.isWebView()) {
+            cordova.plugins.notification.local.cancel(reminder.id, function() {
+                alert("reminder with id " + reminder.id + " deleted");
+            });
+        }
+    };
+
+    $scope.cancelAllNotifications = function () {
+
+        ReminderService.getAllReminders().then(function(Reminders) {
+            ReminderService.deleteReminder(Reminders[0]).then(function() {
+                $scope.updateReminders();
+            });
+
         });
 
         if(ionic.Platform.isWebView()) {

@@ -1,26 +1,20 @@
 <ion-view view-title="Reminders">
   <ion-content ng-controller="RemindersCtrl">
 
-      <input ng-model="counter">
-      <p>{{counter}}</p>
-
       <ion-list>
-        <ion-item ng-repeat="t in test">
-          <h2>Finn</h2>
-          <h3>Don't Know What To Do!</h3>
-          <p>I've had a pretty messed up day. If we just...</p>
+        <ion-item ng-repeat="reminder in reminders">
+          <h2>{{reminder.text}}</h2>
+          <p>id: {{reminder.id}}</p>
+          <p>staring at: {{reminder.at}}</p>
+          <p>frequency: {{reminder.every}}</p>
+          <button class="button" ng-click="cancelNotification(reminder)">
+            Delete
+          </button>
         </ion-item>
       </ion-list>
 
-      <p>{{reminders}}</p>
-
-
       <button class="button" ng-click="navToNewReminder()">
         Add a Reminder
-      </button>
-
-      <button class="button" ng-click="cancelAllNotifications()">
-        Cancel All Notifications
       </button>
 
   </ion-content>

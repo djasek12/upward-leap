@@ -93,6 +93,7 @@ function ReminderService($q) {
         initDB: initDB,
         getAllReminders: getAllReminders,
         addReminder: addReminder,
+        deleteReminder: deleteReminder,
         deleteAllReminders: deleteAllReminders
     };
 
@@ -106,7 +107,11 @@ function ReminderService($q) {
         console.log("adding reminder: " + JSON.stringify(reminder));
 
         return $q.when(_db.post(reminder));
+    };
 
+    function deleteReminder(reminder) {
+        console.log("deleting reminder: " + JSON.stringify(reminder));
+        return $q.when(_db.remove(reminder));
     };
 
     function updateReminder(reminder) {
@@ -118,11 +123,11 @@ function ReminderService($q) {
         // return $q.when(_db.destroy());
 
         _db.destroy().then(function (response) {
-          console.log("successfully dropped")
-          return $q.when(_db.put({"test":1}));
+            console.log("successfully dropped")
+            return $q.when(_db.put({"test":1}));
         }).catch(function (err) {
-          console.log(err);
-          return $q.when(_db.put({"test":1}));
+            console.log(err);
+            return $q.when(_db.put({"test":1}));
         });
     };
 
