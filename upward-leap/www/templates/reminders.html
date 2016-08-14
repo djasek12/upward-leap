@@ -1,5 +1,5 @@
 <ion-view view-title="Reminders">
-  <ion-content ng-controller="AlertCtrl">
+  <ion-content ng-controller="RemindersCtrl">
 
       <input ng-model="counter">
       <p>{{counter}}</p>
@@ -17,6 +17,10 @@
 
       <button class="button" ng-click="navToNewReminder()">
         Add a Reminder
+      </button>
+
+      <button class="button" ng-click="cancelAllNotifications()">
+        Cancel All Notifications
       </button>
 
   </ion-content>

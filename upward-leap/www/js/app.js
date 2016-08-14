@@ -38,6 +38,7 @@ var mainApp = angular.module('starter', ['ionic', 'ngCordova', 'starter.controll
     })
 
     .state('app.reminders', {
+        cache: false,
         url: '/reminders',
         views: {
             'menuContent': {
@@ -60,7 +61,6 @@ var mainApp = angular.module('starter', ['ionic', 'ngCordova', 'starter.controll
         views: {
             'menuContent': {
                 templateUrl: 'templates/newReminder.html',
-                controller: 'AlertCtrl'
             }
         }
     })
@@ -93,7 +93,7 @@ function ReminderService($q) {
         initDB: initDB,
         getAllReminders: getAllReminders,
         addReminder: addReminder,
-        deleteReminder: deleteReminder
+        deleteAllReminders: deleteAllReminders
     };
 
     function initDB() {
@@ -105,17 +105,6 @@ function ReminderService($q) {
     function addReminder(reminder) {
         console.log("adding reminder: " + JSON.stringify(reminder));
 
-        // var doc = {
-        //     "_id": "mittens2",
-        //     "name": "Mittens",
-        //     "occupation": "kitten",
-        //     "age": 3,
-        //     "hobbies": [
-        //         "playing with balls of yarn",
-        //         "chasing laser pointers",
-        //     ]
-        // };
-
         return $q.when(_db.post(reminder));
 
     };
@@ -124,8 +113,17 @@ function ReminderService($q) {
         return $q.when(_db.put(reminder));
     };
 
-    function deleteReminder(reminder) {
-        return $q.when(_db.remove(reminder));
+    function deleteAllReminders() {
+        console.log("destroying database")
+        // return $q.when(_db.destroy());
+
+        _db.destroy().then(function (response) {
+          console.log("successfully dropped")
+          return $q.when(_db.put({"test":1}));
+        }).catch(function (err) {
+          console.log(err);
+          return $q.when(_db.put({"test":1}));
+        });
     };
 
     function getAllReminders() {
