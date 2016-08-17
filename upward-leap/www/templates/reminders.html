@@ -1,21 +1,23 @@
-<ion-view view-title="Reminders">
-  <ion-content ng-controller="RemindersCtrl">
+<ion-view view-title="Reminders" ng-controller="RemindersCtrl">
+    <ion-nav-buttons side="right">
+        <button class="button" ng-click="navToNewReminder()">
+            +
+        </button>
 
-      <ion-list>
-        <ion-item ng-repeat="reminder in reminders">
-          <h2>{{reminder.text}}</h2>
-          <p>id: {{reminder.id}}</p>
-          <p>staring at: {{reminder.at}}</p>
-          <p>frequency: {{reminder.every}}</p>
-          <button class="button" ng-click="cancelNotification(reminder)">
-            Delete
-          </button>
-        </ion-item>
-      </ion-list>
+    </ion-nav-buttons>
+    <ion-content>
 
-      <button class="button" ng-click="navToNewReminder()">
-        Add a Reminder
-      </button>
+        <ion-list>
+            <ion-item ng-repeat="reminder in reminders">
+                <h2>{{reminder.text}}</h2>
+                <p>id: {{reminder.id}}</p>
+                <p>staring at: {{reminder.at}}</p>
+                <p>frequency: {{reminder.every}}</p>
+                <button class="button" ng-click="cancelNotification(reminder)">
+                    Delete
+                </button>
+            </ion-item>
+        </ion-list>
 
-  </ion-content>
+    </ion-content>
 </ion-view>

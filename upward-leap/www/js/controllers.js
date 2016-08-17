@@ -1,22 +1,12 @@
 angular.module('starter.controllers', [])
 
 .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
-
 })
 
 .controller('WelcomeCtrl', function($scope) {
 })
 
 .controller('NewReminderCtrl', function($scope, $cordovaLocalNotification, $ionicPlatform, ionicTimePicker, ionicDatePicker, $state, ReminderService) {
-
-    $scope.updateReminders = function() {
-        console.log("calling update function");
-        //$scope.reminders = ReminderService._reminders;
-        ReminderService.getAllReminders().then(function(Reminders) {
-            $scope.reminders = JSON.stringify(Reminders);
-            console.log("all Reminders: " + $scope.reminders);
-        });
-    }
 
     $scope.$on('$stateChangeSuccess', function () {
 
@@ -34,11 +24,9 @@ angular.module('starter.controllers', [])
         callback: function (val) {
             var date = new Date(val);
             $scope.date = date;
-
             $scope.year = date.getFullYear();
             $scope.month = ("0" + (date.getMonth())).slice(-2);
             $scope.day = ("0" + date.getDate()).slice(-2);
-
 
             $scope.timePickerOpened = true;
         },
@@ -59,9 +47,6 @@ angular.module('starter.controllers', [])
                 $scope.hours = time.getUTCHours();
                 $scope.minutes = time.getUTCMinutes();
 
-                // console.log("hours updated: " + $scope.hours);
-                // console.log("minutes: " + $scope.minutes);
-
                 $scope.readyToScheduleNotification = true;
             }
         },
@@ -76,7 +61,6 @@ angular.module('starter.controllers', [])
     };
 
     $scope.openTimePicker = function(){
-        console.log("timepicker opened");
         ionicTimePicker.openTimePicker($scope.timeObj);
     };
 
@@ -116,14 +100,13 @@ angular.module('starter.controllers', [])
         }
 
         ReminderService.addReminder($scope.reminder);
-        console.log("reminder object: " + $scope.reminder);
+        //console.log("reminder object: " + $scope.reminder);
 
         if(ionic.Platform.isWebView()) {
             cordova.plugins.notification.local.schedule($scope.reminder);
             $state.go('app.reminders');
         } else {
             $state.go('app.reminders');
-
         }
 
         // document.addEventListener('deviceready', function () {
@@ -153,19 +136,15 @@ angular.module('starter.controllers', [])
 
 .controller('RemindersCtrl', function($scope, $ionicPlatform, $state, ReminderService) {
 
-    $scope.test = [{"id":"1"}, {"id":"2"}]
-
     $scope.navToNewReminder = function () {
-        console.log("navToNewReminder clicked");
         $state.go('app.newReminder');
     }
 
     $scope.updateReminders = function() {
-        console.log("calling update function");
-        //$scope.reminders = ReminderService._reminders;
+        //console.log("calling update function");
         ReminderService.getAllReminders().then(function(Reminders) {
             $scope.reminders = Reminders;
-            console.log("all Reminders: " + $scope.reminders);
+            //console.log("all Reminders: " + $scope.reminders);
         });
     }
 
@@ -193,26 +172,23 @@ angular.module('starter.controllers', [])
         }
     };
 
-    $scope.cancelAllNotifications = function () {
-
-        ReminderService.getAllReminders().then(function(Reminders) {
-            ReminderService.deleteReminder(Reminders[0]).then(function() {
-                $scope.updateReminders();
-            });
-
-        });
-
-        if(ionic.Platform.isWebView()) {
-            cordova.plugins.notification.local.cancelAll(
-                function () {
-                    ReminderService.deleteAllReminders();
-                    alert('ok, all canceled');
-                }
-            )
-        }
-    };
+    // $scope.cancelAllNotifications = function () {
+    //
+    //     ReminderService.getAllReminders().then(function(Reminders) {
+    //         ReminderService.deleteReminder(Reminders[0]).then(function() {
+    //             $scope.updateReminders();
+    //         });
+    //
+    //     });
+    //
+    //     if(ionic.Platform.isWebView()) {
+    //         cordova.plugins.notification.local.cancelAll(
+    //             function () {
+    //                 ReminderService.deleteAllReminders();
+    //                 alert('ok, all canceled');
+    //             }
+    //         )
+    //     }
+    // };
 
 });
-
-//.controller('PlaylistCtrl', function($scope, $stateParams) {
-//});
